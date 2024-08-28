@@ -1,0 +1,79 @@
+﻿@* @page
+@model PrivacyModel
+@{
+    ViewData["Title"] = "Privacy Policy";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Use this page to detail your site's privacy policy.</p>
+
+
+ *@
+
+
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Privacy Policy";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Razor Pages</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="text-center">
+        <h1 class="display-4">Welcome To RBL</h1>
+        <p>Data Processing on Back Ground</p>
+        <button id="startButton" class="btn btn-primary">Processed</button>
+        <p id="generatedNumber" class="lead">No Of Data Uploaded: N/A</p>
+        <p id="timer" class="lead">Timer: 00:00</p>
+    </div>
+
+    <script>
+        let isButtonClicked = false;
+        let currentNumber = 0;
+        let timerInterval;
+
+        // Listen for clicks on the button
+        document.getElementById("startButton").addEventListener("click", function () {
+            if (!isButtonClicked) {
+                isButtonClicked = true;
+                document.addEventListener("keydown", generateSequentialNumberOnSpacebar);
+                startTimer();
+            }
+        });
+
+        function generateSequentialNumberOnSpacebar(event) {
+            if (isButtonClicked && event.code === "Space") {
+                currentNumber += 1;
+                document.getElementById("generatedNumber").innerText = `No Of Data Uploaded: ${currentNumber}`;
+            }
+        }
+
+        function startTimer() {
+            let minutes = 0;
+            let seconds = 0;
+
+            timerInterval = setInterval(function () {
+                seconds++;
+
+                if (seconds === 60) {
+                    minutes++;
+                    seconds = 0;
+                }
+
+                document.getElementById("timer").innerText = `Timer: ${padNumber(minutes)}:${padNumber(seconds)}`;
+            }, 1000);
+        }
+
+        function padNumber(number) {
+            return number < 10 ? '0' + number : number;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+﻿
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Check Status";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Razor Pages</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        @* <p>Data Processing on Back Ground</p> *@
+        <button id="startButton" class="btn btn-primary">Processed</button>
+        <p id="generatedNumber" class="lead">Count of Evaluated Records: 0</p>
+        <p id="timer" class="lead">Timer: 00:00</p>
+    </div>
+
+    <script>
+        let isButtonClicked = false;
+        let currentNumber = 0;
+        let timerInterval;
+        let isPaused = false;
+        let idleTimeout;
+
+        // Listen for clicks on the button
+        document.getElementById("startButton").addEventListener("click", function () {
+            if (!isButtonClicked) {
+                isButtonClicked = true;
+                document.addEventListener("keydown", generateSequentialNumberOnSpacebar);
+                startTimer();
+                setupMouseActivityListeners();
+            }
+        });
+
+        function generateSequentialNumberOnSpacebar(event) {
+            if (isButtonClicked && event.code === "Space") {
+                currentNumber += 1;
+                document.getElementById("generatedNumber").innerText = `Count of Evaluated Records: ${currentNumber}`;
+            }
+        }
+
+        function startTimer() {
+            let minutes = 0;
+            let seconds = 0;
+
+            timerInterval = setInterval(function () {
+                if (!isPaused) {
+                    seconds++;
+
+                    if (seconds === 60) {
+                        minutes++;
+                        seconds = 0;
+                    }
+
+                    document.getElementById("timer").innerText = `Timer: ${padNumber(minutes)}:${padNumber(seconds)}`;
+                }
+            }, 1000);
+        }
+
+        function padNumber(number) {
+            return number < 10 ? '0' + number : number;
+        }
+
+        function setupMouseActivityListeners() {
+            document.addEventListener("mousemove", function () {
+                pauseTimer();
+                resetIdleTimeout();
+            });
+        }
+
+        function pauseTimer() {
+            isPaused = true;
+        }
+
+        function resumeTimer() {
+            isPaused = false;
+        }
+
+        function resetIdleTimeout() {
+            clearTimeout(idleTimeout);
+            idleTimeout = setTimeout(function () {
+                resumeTimer();
+            }, 2000); // 2 seconds of idle time
+        }
+    </script>
+</body>
+</html>
